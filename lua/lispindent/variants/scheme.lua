@@ -129,7 +129,7 @@ function SchemeIndenter.get_default_rules()
       ["check-case"] = 1,
       ["lambda-checked"] = 1,
       -- from Geiser
-      ["case-lambda"] = 1,
+      ["case-lambda"] = 0,
       ["catch"] = 1, 
       ["class"] = 1,
     },
