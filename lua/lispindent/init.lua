@@ -52,12 +52,12 @@ function M.setup(opts)
 		local scheme_opts = opts.scheme
     local module_to_load = "lispindent.variants.scheme"
 
-		if scheme_opts.features then
-			local features = scheme_opts.features
-			if features.guile or features.guix then
+		if scheme_opts.variants then
+			local variants = scheme_opts.variants
+			if variants.guile or variants.guix then
 				module_to_load = "lispindent.variants.scheme-guile"
 			end
-			if features["guix"] then
+			if variants["guix"] then
 				module_to_load = "lispindent.variants.scheme-guix"
 			end
 		end
