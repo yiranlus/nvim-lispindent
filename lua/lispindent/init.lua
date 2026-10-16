@@ -65,6 +65,12 @@ function M.setup(opts)
 
 		create_autocmd("scheme", indenter)
 	end
+
+  if opts.fennel and opts.fennel.enabled then
+    local indenter = require("lispindent.variants.fennel")
+
+    create_autocmd("fennel", indenter)
+  end
 end
 
 return M
