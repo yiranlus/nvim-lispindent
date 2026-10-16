@@ -1,7 +1,7 @@
 ---@class State
 ---@field nested_indices number[] The indices of the nested lists leading to the current list
 ---@field arg_index number The index of the current argument in the list
----@field spec string|table|function? The indentation specification for the current list
+---@field spec string|table|function|integer? The indentation specification for the current list
 ---@field root_node TSNode The root node of the current list
 ---@field list_node TSNode The current list node
 
