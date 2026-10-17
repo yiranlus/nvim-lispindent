@@ -1,3 +1,5 @@
+local parser = require("lispindent.core.parser")
+
 local M =  {
   -- a table of indenters, where the key is the langauge names
   indenters = {}
@@ -41,6 +43,10 @@ end
 
 function M.setup(opts)
 	opts = opts or {}
+
+  if opts.use_lang then
+    parser.use_lang = opts.use_lang
+  end
 
 	if opts.commonlisp and opts.commonlisp.enabled then
 		local indenter = require("lispindent.variants.commonlisp")

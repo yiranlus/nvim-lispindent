@@ -84,7 +84,7 @@ function CommonLispIndenter.get_default_rules()
       ["define-condition"] = "defclass",
       ["define-modify-macro"] = { { 4, "*", I.lambda }, "*", I.body },
       -- -- ["define-setf"] = indent_defsetf,
-      ["defun"] = { { 4, "*", I.lambda }, "*", I.body },
+      ["defun"] = { 4, { 4, "*", I.lambda }, "*", I.body },
       ["defgeneric"] = { { 4, "&" }, "*", I.body },
       ["define-setf-method"] = "defun",
       ["define-setf-expander"] = "defun",

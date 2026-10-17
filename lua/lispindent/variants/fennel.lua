@@ -9,6 +9,19 @@ function FennelIndenter:new(o)
   return setmetatable(instance, self)
 end
 
+function FennelIndenter:default_indent_func(bufnr, lnum, state)
+	local list_node = state.list_node
+  local bracket_node = list_node:child(0)
+
+	local _, base = list_node:start()
+
+  if bracket_node and (bracket_node:text() == "{" or  bracket_node:text() == "[") then
+    return base + 1
+  end
+
+  return LispIndenter.default_indent_func(self, bufnr, lnum, state)
+end
+
 --- in default case, only the last child of the list is meaningful
 ---@param bufnr number
 ---@param lnum number

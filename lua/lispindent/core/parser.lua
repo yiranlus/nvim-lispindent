@@ -1,9 +1,12 @@
 LispParser = {}
 LispParser.__index = LispParser
 
+LispParser.use_lang = nil
+
 function LispParser.node_at_line(bufnr, lnum)
-	local lang = vim.treesitter.language.get_lang(vim.bo.filetype)
-	local parser = vim.treesitter.get_parser(bufnr, lang)
+  local lang = LispParser.use_lang or vim.treesitter.language.get_lang(vim.bo.filetype)
+
+  local parser = vim.treesitter.get_parser(bufnr, lang)
 	if not parser then
 		return nil
 	end
