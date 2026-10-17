@@ -77,6 +77,12 @@ function M.setup(opts)
 
     create_autocmd("fennel", indenter)
   end
+
+  if opts.clojure and opts.clojure.enabled then
+    local indenter = require("lispindent.variants.clojure")
+
+    create_autocmd("clojure", indenter)
+  end
 end
 
 return M
