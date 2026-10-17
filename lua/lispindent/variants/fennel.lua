@@ -10,13 +10,17 @@ function FennelIndenter:new(o)
 end
 
 function FennelIndenter:default_indent_func(bufnr, lnum, state)
+
 	local list_node = state.list_node
   local bracket_node = list_node:child(0)
 
 	local _, base = list_node:start()
 
-  if bracket_node and (bracket_node:text() == "{" or  bracket_node:text() == "[") then
-    return base + 1
+  if bracket_node then
+    local text = vim.treesitter.get_node_text(bracket_node, bufnr)
+    if text == "{" or text == "[" then
+      return base + 1
+    end
   end
 
   return LispIndenter.default_indent_func(self, bufnr, lnum, state)
