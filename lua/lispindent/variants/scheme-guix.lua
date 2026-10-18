@@ -31,7 +31,7 @@ function GuixIndenter:modify_phases_indent_func(bufnr, lnum, state)
       if list_node:named_child_count() == 0 then
         return self:default(bufnr, lnum, state)
       else
-        local head_node = SchemeParser.get_named_child(list_node, 0)
+        local head_node = self.parser.get_named_child(list_node, 0)
         local head_text = vim.treesitter.get_node_text(head_node, bufnr)
 
         if head_text == "add-before" or head_text == "add-after" then
