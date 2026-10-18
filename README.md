@@ -5,8 +5,6 @@
 
 This plugin borrow the concept of SLIME's indenter to make Lisp well indented and easier to read. This plugin relies on a customized Lisp tree-sitter (which can be found [here](https://github.com/yiranlus/tree-sitter-lisp)). It has been tested with Common Lisp and Guile code.
 
-**Note:**: this plugin is in early development, so advanced indentation rules like Common Lisp's `loop` were not implemented yet. Any contribution is welcome.
-
 *This project is designed to be part of Common Lisp development environment which I have been working on for some time. However, this indenter can be used for different Lisp variants.*
 
 ## Installation
