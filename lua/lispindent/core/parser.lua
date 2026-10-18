@@ -185,4 +185,20 @@ function LispParser.nested_argument_position(bufnr, node, rules, regex_rules)
 	return parent, head_text, result
 end
 
+function LispParser.get_named_child(node, index, keep_comments)
+  if keep_comments then
+    return node:named_child(index)
+  end
+  for i = 0, node:named_child_count() - 1 do
+    local child = node:named_child(i)
+    if child:type() ~= "comment" then
+      if index == 0 then
+        return child
+      end
+      index = index - 1
+    end
+  end
+  return nil
+end
+
 return LispParser
