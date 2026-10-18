@@ -69,26 +69,6 @@ NIL = ClojureIndenter.NIL
 function ClojureIndenter.get_default_rules()
   return {
     rules = {
-      ["accumulate"] = 1,
-      ["faccumulate"] = "accumulate",
-      ["case"] = {{4, "*", 1}, I.body},
-      ["case-try"] = "case",
-      ["collect"] = 1,
-      ["fcollect"] = "collect",
-      ["icollect"] = "collect",
-      ["do"] = 0,
-      ["each"] = 1,
-      ["eval-compiler"] = 0,
-      ["fn"] = ClojureIndenter.fn_indent_func,
-      ["lambda"] = ClojureIndenter.fn_indent_func,
-      ["for"] = 1,
-      ["let"] = {{4, "*", 1}, I.body},
-      ["macro"] = {4, 4, I.body},
-      ["match"] = "case",
-      ["match-try"] = "case",
-      ["when"] = 1,
-      ["while"] = 1,
-      ["with-open"] = 1,
     },
   }
 end
