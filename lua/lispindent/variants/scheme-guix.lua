@@ -10,7 +10,6 @@ function GuixIndenter:new(o)
 end
 
 function GuixIndenter:modify_phases_indent_func(bufnr, lnum, state)
-  local root_node = state.root_node
   local nested_indices = state.nested_indices
   local index = nested_indices[1]
   local list_node = state.list_node
