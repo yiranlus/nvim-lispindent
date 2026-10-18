@@ -41,4 +41,4 @@ The rules are very similar to that of SLIME. Each indent rule is a list which ca
 
 Unlike SLIME rules, the indent for the first element should also be specified, you can use either `NIL` (not Lua's `nil`) or `1`. There should be no difference between the two. The top-level rules should ignore the indent of current list and the first element.
 
-You can also use shortcut like single number, which will generate a body-like indent rules like in SLIME. You can refer to [lua/lispindent/variants/commonlisp.lua] for concrete examples.
+You can also use shortcut like single number, which will generate a body-like indent rules like in SLIME. You can refer to [lua/lispindent/variants/commonlisp.lua](lua/lispindent/variants/commonlisp.lua) for concrete examples.
