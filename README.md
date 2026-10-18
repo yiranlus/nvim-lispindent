@@ -1,5 +1,8 @@
 # A SLIME-like Indenter implemented for Neovim
 
+> [!WARNING]
+> Note: this module in in early development and I am updating the indent rules to the module from time to time. However, the basic rules are generally stable. I welcome all types of contributions.
+
 This plugin borrow the concept of SLIME's indenter to make Lisp well indented and easier to read. This plugin relies on a customized Lisp tree-sitter (which can be found [here](https://github.com/yiranlus/tree-sitter-lisp)). It has been tested with Common Lisp and Guile code.
 
 **Note:**: this plugin is in early development, so advanced indentation rules like Common Lisp's `loop` were not implemented yet. Any contribution is welcome.
