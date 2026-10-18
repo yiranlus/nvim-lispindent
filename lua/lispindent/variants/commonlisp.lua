@@ -58,7 +58,7 @@ function CommonLispIndenter:indent_loop_func(bufnr, lnum, state)
   --   end
   -- end
 
-  return base
+  return base + 2
 end
 
 function CommonLispIndenter.get_default_rules()
