@@ -35,7 +35,7 @@ local function create_autocmd(ft, indenter)
       vim.bo[bufnr].commentstring = ";; %s"
 
       vim.bo[bufnr].indentexpr = "v:lua.require'lispindent'.indentexpr()"
-      vim.bo[bufnr].indentkeys = "0{,0},0),0],!^F,o,O,(,)"
+      vim.bo[bufnr].indentkeys = "0},0),0],!^F,o,O,)"
       vim.b[bufnr].lisp_indenter = lang
     end,
   })
