@@ -3,8 +3,20 @@ LispParser.__index = LispParser
 
 LispParser.use_lang = nil
 
+local function get_parser_name(ft)
+  if type(LispParser.use_lang) == "function" then
+    return LispParser.use_lang(ft)
+  elseif type(LispParser.use_lang) == "table" then
+    return LispParser.use_lang[ft] or LispParser.use_lang["*"]
+  elseif type(LispParser.use_lang) == "string" then
+    return LispParser.use_lang
+  end
+
+  return nil
+end
+
 function LispParser.node_at_line(bufnr, lnum)
-  local lang = LispParser.use_lang or vim.treesitter.language.get_lang(vim.bo.filetype)
+  local lang = get_parser_name(vim.bo.filetype) or vim.treesitter.language.get_lang(vim.bo.filetype)
 
   local parser = vim.treesitter.get_parser(bufnr, lang)
 	if not parser then
@@ -29,6 +41,7 @@ function LispParser.is_inside_token(bufnr, lnum)
 		return false
 	end
 
+  print("node type: ", node:type())
 	if node:type() == "token" then
 		local start_row, _, end_row, _ = node:range()
 		if start_row ~= end_row and lnum - 1 > start_row then

@@ -83,6 +83,12 @@ function M.setup(opts)
 
     create_autocmd("clojure", indenter)
   end
+
+  if opts.hy and opts.hy.enabled then
+    local indenter = require("lispindent.variants.hy")
+
+    create_autocmd("hy", indenter)
+  end
 end
 
 return M
