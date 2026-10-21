@@ -21,18 +21,26 @@ function HyParser.argument_position(bufnr, list_node, lnum)
     if child:type() ~= "comment" and not (
       child:type() == "reader_macro" and (
         vim.treesitter.get_node_text(child, bufnr):sub(1, 2) == "#;" or
-        vim.treesitter.get_node_text(child, bufnr):sub(1, 2) == "#^"
+        vim.treesitter.get_node_text(child, bufnr) == "#^"
       )
     )
     then
 
       local start_row = child:start()
+      local prev_sibling = child:prev_named_sibling()
+
+      if prev_sibling and prev_sibling:type() == "reader_macro" and
+        vim.treesitter.get_node_text(prev_sibling, bufnr) == "#^"
+      then
+        goto continue
+      end
       if start_row < target_row then
         count = count + 1
       else
         break
       end
     end
+      ::continue::
   end
 
   return count
@@ -317,8 +325,6 @@ function HyIndenter.get_default_rules()
       ["eval-and-compile"] = 0,
       ["eval-when-compile"] = 0,
       ["let"] = 1,
-      ["require"] = 0,
-      ["import"] = 0,
       -- Hyrule
       ["ap-each"] = 1,
       ["ap-each-while"] = 2,
