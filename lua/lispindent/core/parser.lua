@@ -41,7 +41,6 @@ function LispParser.is_inside_token(bufnr, lnum)
 		return false
 	end
 
-  print("node type: ", node:type())
 	if node:type() == "token" then
 		local start_row, _, end_row, _ = node:range()
 		if start_row ~= end_row and lnum - 1 > start_row then
