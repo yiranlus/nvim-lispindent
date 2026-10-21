@@ -249,6 +249,40 @@ function HyIndenter:deftype_indent_func(bufnr, lnum, state)
   return self:default_indent_func(bufnr, lnum, state)
 end
 
+function HyIndenter:try_indent_func(bufnr, lnum, state)
+  local nested_indices = state.nested_indices
+  local index = nested_indices[1]
+  local list_node = state.list_node
+  local _, base = list_node:start()
+
+  if #nested_indices == 1 and index > 0 then
+    return self:body_indent_func(bufnr, lnum, state)
+  elseif #nested_indices == 2 then
+    if list_node:type() == "list" then
+      local second_index = nested_indices[2]
+
+      if second_index > 0 then
+        local head_node = self.parser.get_named_child(list_node, 0)
+        local head_text = vim.treesitter.get_node_text(head_node, bufnr)
+
+        if head_text == "except" or
+          head_text == "finally" then
+          if second_index == 1 then
+            return base + 4
+          end
+          return self:body_indent_func(bufnr, lnum, state)
+        elseif head_text == "else" then
+          return self:body_indent_func(bufnr, lnum, state)
+        end
+
+        return self:default_indent_func(bufnr, lnum, state)
+      end
+    end
+  end
+
+  return self:default_indent_func(bufnr, lnum, state)
+end
+
 local I = {
   lambda = HyIndenter.lambda_indent_func,
   body = HyIndenter.body_indent_func,
@@ -264,12 +298,9 @@ function HyIndenter.get_default_rules()
       ["defreader"] = 1,
       ["deftype"] = HyIndenter.deftype_indent_func,
       ["defclass"] = HyIndenter.defclass_indent_func,
-      ["if"] = 1,
       ["when"] = 1,
-      ["unless"] = 1,
       ["with"] = 1,
       ["match"] = 1,
-      ["branch"] = 1,
       ["while"] = 1,
       ["for"] = 1,
       ["lfor"] = 0,
@@ -279,7 +310,7 @@ function HyIndenter.get_default_rules()
       ["cond"] = 0,
       ["do"] = 0,
       ["do-mac"] = 0,
-      ["try"] = 0,
+      ["try"] = HyIndenter.try_indent_func,
       ["except"] = 1,
       ["else"] = 0,
       ["finally"] = 0,
@@ -288,6 +319,34 @@ function HyIndenter.get_default_rules()
       ["let"] = 1,
       ["require"] = 0,
       ["import"] = 0,
+      -- Hyrule
+      ["ap-each"] = 1,
+      ["ap-each-while"] = 2,
+      ["ap-dotimes"] = 1,
+      ["ap-when"] = 1,
+      ["ap-with"] = 1,
+      ["doto"] = 1,
+      ["block"] = 0,
+      ["branch"] = 1,
+      ["case"] = 1,
+      ["cfor"] = 1,
+      ["defmain"] = 1,
+      ["do-n"] = 1,
+      ["ebranch"] = "branch",
+      ["ecase"] = "case",
+      ["lif"] = 1,
+      ["list-n"] = 1,
+      ["loop"] = 1,
+      ["unless"] = 1,
+      ["defn+"] = HyIndenter.defn_indent_func,
+      ["fn+"] = "fn",
+      ["let+"] = "let",
+      ["defmacro-kwargs"] = 2,
+      ["defmacro!"] = "defmacro",
+      ["meth"] = HyIndenter.defn_indent_func,
+      ["ameth"] = HyIndenter.defn_indent_func,
+      ["comment"] = 0,
+      ["smacrolet"] = "let",
     },
   }
 end
