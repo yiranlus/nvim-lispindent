@@ -98,43 +98,34 @@ function HyIndenter:defn_indent_func(bufnr, lnum, state)
     for i = 1, index do
       local child = root_node:named_child(i)
 
-      print("child: ", child and vim.treesitter.get_node_text(child, bufnr) or "nil")
-
       if found_async == nil then
         if child and vim.treesitter.get_node_text(child, bufnr) == ":async" then
-          print("found async")
           found_async = true
           goto continue
         else
-          print("not found async")
           found_async = false
         end
       end
 
       if found_async ~= nil and found_decorator == nil then
         if child and child:type() == "list" then
-          print("found decorator")
           found_decorator = true
           goto continue
         else
-          print("not found decorator")
           found_decorator = false
         end
       end
 
       if found_decorator ~= nil and found_tp == nil then
         if child and vim.treesitter.get_node_text(child, bufnr) == ":tp" then
-          print("found tp")
           found_tp = true
           goto continue
         else
-          print("not found tp")
           found_tp = false
         end
       end
 
       if found_async ~= nil and found_decorator ~= nil and found_tp ~= nil then
-        print("break at index: ", i)
         break
       end
 
@@ -142,7 +133,6 @@ function HyIndenter:defn_indent_func(bufnr, lnum, state)
     end
 
     local count = (found_async and 1 or 0) + (found_decorator and 1 or 0) + (found_tp and 2 or 0)
-    print("count: ", count, " index: ", index)
     if index <= count + 2 then
       return base + 4
     end
@@ -169,32 +159,25 @@ function HyIndenter:defclass_indent_func(bufnr, lnum, state)
     for i = 1, index do
       local child = root_node:named_child(i)
 
-      print("child: ", child and vim.treesitter.get_node_text(child, bufnr) or "nil")
-
       if found_decorator == nil then
         if child and child:type() == "list" then
-          print("found decorator")
           found_decorator = true
           goto continue
         else
-          print("not found decorator")
           found_decorator = false
         end
       end
 
       if found_decorator ~= nil and found_tp == nil then
         if child and vim.treesitter.get_node_text(child, bufnr) == ":tp" then
-          print("found tp")
           found_tp = true
           goto continue
         else
-          print("not found tp")
           found_tp = false
         end
       end
 
       if found_decorator ~= nil and found_tp ~= nil then
-        print("break at index: ", i)
         break
       end
 
@@ -229,17 +212,14 @@ function HyIndenter:deftype_indent_func(bufnr, lnum, state)
 
       if found_tp == nil then
         if child and vim.treesitter.get_node_text(child, bufnr) == ":tp" then
-          print("found tp")
           found_tp = true
           goto continue
         else
-          print("not found tp")
           found_tp = false
         end
       end
 
       if found_tp ~= nil then
-        print("break at index: ", i)
         break
       end
 
