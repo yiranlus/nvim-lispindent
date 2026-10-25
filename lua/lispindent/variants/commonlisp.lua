@@ -15,6 +15,93 @@ local I = {
 }
 NIL = CommonLispIndenter.NIL
 
+
+---@param bufnr number
+---@param lnum number
+---@param state State
+function CommonLispIndenter:default_indent_func(bufnr, lnum, state)
+	-- in default case, only the last child of the list is meaningful
+	state = state or {}
+	local list_node = state.list_node
+
+	local start_row, base = list_node:start()
+	local raw_index = self.parser.raw_argument_position(bufnr, list_node, lnum)
+	local nested_indices = state.nested_indices or {}
+	local index = nested_indices[#nested_indices]
+
+	if list_node and list_node:type() ~= "list" then
+		return base
+	end
+
+	if not raw_index then
+		return base + 1
+	end
+
+	if index < 0 then
+		-- Inside the opening '('
+		return base
+	elseif index == 0 or index == 1 then
+		return base + 1
+	end
+
+	-- Find the child with minimum index at that is at the last line
+  local target_child = nil
+  local current_node = list_node:named_child(raw_index)
+  local current_node_text = current_node and vim.treesitter.get_node_text(current_node, bufnr) or nil
+
+  do
+    local target_child_index = raw_index - 1
+    target_child = list_node:named_child(target_child_index)
+    local target_row = target_child and target_child:start() or start_row
+
+    while target_child_index > 0 and target_child and target_child:start() >= target_row do
+      target_child_index = target_child_index - 1
+      target_child = list_node:named_child(target_child_index)
+    end
+    target_child = list_node:named_child(target_child_index + 1)
+  end
+
+  if current_node_text and (current_node_text:match("^:.*$") or current_node_text:match("::.*$")) then
+    local target_child_index = raw_index - 1
+    target_child = list_node:named_child(target_child_index)
+    local target_child_text = target_child and vim.treesitter.get_node_text(target_child, bufnr) or nil
+
+    local target_row = target_child and target_child:start() or start_row
+
+    while target_child_text and not (target_child_text:match("^:.*$") or target_child_text:match("::.*$")) and target_child_index >= 0 do
+      target_child_index = target_child_index - 1
+      target_child = list_node:named_child(target_child_index)
+      target_child_text = target_child and vim.treesitter.get_node_text(target_child, bufnr) or nil
+      target_row = target_child and target_child:start() or start_row
+    end
+
+    local prev_child_index = nil
+    while target_child_index >= 0 and target_child and target_child:start() >= target_row do
+      if target_child_text and (target_child_text:match("^:.*$") or target_child_text:match("::.*$")) then
+        prev_child_index = target_child_index
+      end
+      target_child_index = target_child_index - 1
+      target_child = list_node:named_child(target_child_index)
+      target_child_text = target_child and vim.treesitter.get_node_text(target_child, bufnr) or nil
+    end
+    if prev_child_index then
+      target_child = list_node:named_child(prev_child_index)
+    else
+      target_child = nil
+    end
+  end
+
+	if not target_child then
+		-- Fallback if there is no second child
+		return base + 1
+	end
+
+	local _, start_col = target_child:start() -- 0-based column of the target child
+
+	-- Ensure we align to at least base+1
+	return math.max(base + 1, start_col)
+end
+
 function CommonLispIndenter:indent_loop_func(bufnr, lnum, state)
   local root_node = state.root_node
   local list_node = state.list_node
