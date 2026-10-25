@@ -149,8 +149,8 @@ function CommonLispIndenter.get_default_rules()
       ["with-standard-io-syntax"] = { 2 },
     },
     regex_rules = {
-      ["^\\(define-\\|do-\\|with-\\|without-\\)"] = 1,
-      [":\\(define-\\|do-\\|with-\\|without-\\)"] = 1,
+      ["^\\(def\\|define-\\|do-\\|with-\\|without-\\)"] = 1,
+      [":\\(def\\|define-\\|do-\\|with-\\|without-\\)"] = 1,
     }
   }
 end
