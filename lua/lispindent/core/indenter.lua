@@ -239,14 +239,15 @@ function LispIndenter:indent(bufnr, lnum)
 	end
 
 	local arg_index = self.parser.argument_position(bufnr, list_node, lnum)
-	local root_node, head_text, nested_indices = self.parser.nested_argument_position(bufnr, list_node, rules, regex_rules)
+	local root_node, head_node, nested_indices = self.parser.nested_argument_position(bufnr, list_node, rules, regex_rules)
+  local head_text = head_node and vim.treesitter.get_node_text(head_node, bufnr) or ""
 	nested_indices[#nested_indices + 1] = arg_index
 
 	-- check for normal rules
 	local spec = rules and rules[head_text] or nil
 	regex_rules = regex_rules or {}
 
-	if not spec and head_text then
+	if not spec and head_node:type() == "token" then
 		for pattern, regex_spec in pairs(regex_rules) do
 			if vim.regex(pattern):match_str(head_text) then
 				spec = regex_spec

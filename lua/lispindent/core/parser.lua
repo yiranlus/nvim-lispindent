@@ -135,27 +135,36 @@ function LispParser.raw_argument_position(bufnr, list_node, lnum)
 	return count
 end
 
+
+---@param bufnr number
+---@param node TSNode
+---@param rules table<string, any>
+---@param regex_rules table<string, any>
+---@return TSNode?, TSNode?, table<number>
 function LispParser.nested_argument_position(bufnr, node, rules, regex_rules)
 	-- get the nested index of `node` in its parent list,
 	-- the procedure stops when the list head is found in the rules table
 	local result = {}
+  local head_node = nil
 	local head_text = nil
 	if node:named_child_count() > 0 then
-		head_text = vim.treesitter.get_node_text(node:named_child(0), bufnr)
+		head_node = node:named_child(0)
+		head_text = head_node and vim.treesitter.get_node_text(head_node, bufnr)
 	end
 	if head_text and rules[head_text] then
-		return node, head_text, result
+		return node, head_node, result
 	end
   for pattern, _ in pairs(regex_rules) do
     if head_text and vim.regex(pattern):match_str(head_text) then
-      return node, head_text, result
+      return node, head_node, result
     end
   end
 
 	local parent = node:parent()
 	while parent and parent:type() == "list" do
 		if parent:named_child_count() > 0 then
-			head_text = vim.treesitter.get_node_text(parent:named_child(0), bufnr)
+      head_node = parent:named_child(0)
+			head_text = head_node and vim.treesitter.get_node_text(head_node, bufnr)
 		end
 
     local real_index = 0
@@ -194,7 +203,7 @@ function LispParser.nested_argument_position(bufnr, node, rules, regex_rules)
 		result[i], result[j] = result[j], result[i]
 	end
 
-	return parent, head_text, result
+	return parent, head_node, result
 end
 
 function LispParser.get_named_child(node, index, keep_comments)
