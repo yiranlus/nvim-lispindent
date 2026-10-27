@@ -62,6 +62,8 @@ function CommonLispIndenter:default_indent_func(bufnr, lnum, state)
   end
 
   if current_node_text and (current_node_text:match("^:.*$") or current_node_text:match("::.*$")) then
+    local fallback_target_child = target_child
+
     local target_child_index = raw_index - 1
     target_child = list_node:named_child(target_child_index)
     local target_child_text = target_child and vim.treesitter.get_node_text(target_child, bufnr) or nil
@@ -87,7 +89,7 @@ function CommonLispIndenter:default_indent_func(bufnr, lnum, state)
     if prev_child_index then
       target_child = list_node:named_child(prev_child_index)
     else
-      target_child = nil
+      target_child = fallback_target_child
     end
   end
 
@@ -103,23 +105,23 @@ function CommonLispIndenter:default_indent_func(bufnr, lnum, state)
 end
 
 function CommonLispIndenter:indent_loop_func(bufnr, lnum, state)
-  local root_node = state.root_node
-  local list_node = state.list_node
-  local nested_indices = state.nested_indices
-  local spec = state.spec or nil
-
-  local rules = self.rules
-  if #nested_indices > 1 then
-    return I.default_indent_func(bufnr, lnum, list_node, nested_indices, rules)
-  end
-
-  local start_row, base = root_node:start()
-  local arg_index = nested_indices[#nested_indices]
-  if arg_index == 1 then
-    return self:body_indent_func(bufnr, lnum, root_node, list_node, nested_indices)
-  end
-
-  _, base = root_node:named_child(1):start()
+  -- local root_node = state.root_node
+  -- local list_node = state.list_node
+  -- local nested_indices = state.nested_indices
+  -- local spec = state.spec or nil
+  --
+  -- local rules = self.rules
+  -- if #nested_indices > 1 then
+  --   return I.default_indent_func(bufnr, lnum, list_node, nested_indices, rules)
+  -- end
+  --
+  -- local start_row, base = root_node:start()
+  -- local arg_index = nested_indices[#nested_indices]
+  -- if arg_index == 1 then
+  --   return self:body_indent_func(bufnr, lnum, root_node, list_node, nested_indices)
+  -- end
+  --
+  -- _, base = root_node:named_child(1):start()
 
   -- local arg_index = nested_indices[#nested_indices]
   -- local last_arg = root_node:named_child(root_node:named_child_count() - 1)
@@ -145,7 +147,7 @@ function CommonLispIndenter:indent_loop_func(bufnr, lnum, state)
   --   end
   -- end
 
-  return base + 2
+  return self:default_indent_func(bufnr, lnum, state)
 end
 
 function CommonLispIndenter.get_default_rules()
