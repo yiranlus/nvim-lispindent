@@ -56,15 +56,18 @@ function M.setup(opts)
 
 	if opts.scheme and opts.scheme.enabled then
 		local scheme_opts = opts.scheme
-		create_autocmd("scheme", "lispindent.variants.scheme")
+		local indenter = require("lispindent.variants.scheme")
+		create_autocmd("scheme", indenter)
 
 		if scheme_opts.variants then
 			local variants = scheme_opts.variants
 			if variants.guile or variants.guix then
-        create_autocmd("scheme.guix", "lispindent.variants.scheme-guile")
+        local indenter = require("lispindent.variants.scheme-guile")
+        create_autocmd("scheme.guile", indenter)
 			end
 			if variants["guix"] then
-        create_autocmd("scheme.guix", "lispindent.variants.scheme-guix")
+        local indenter = require("lispindent.variants.scheme-guix")
+        create_autocmd("scheme.guix", indenter)
 			end
 		end
 	end
